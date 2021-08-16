@@ -1,5 +1,7 @@
 package InOut;
 
+import executor.ExecutorVariable;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,24 +9,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 
 public class Files {
 
     private final List<FileRead> frList;
 
-    private final Executor executor =
-            Executors.newCachedThreadPool(
-                    new ThreadFactory() {
-                        @Override
-                        public Thread newThread(Runnable r) {
-                            Thread t = new Thread(r);
-                            t.setDaemon(true);
-                            return t;
-                        }
-                    });
+    private final Executor executorVariable = new ExecutorVariable().excutable;
 
     private Files(List<FileRead> frList){
         this.frList = frList;
@@ -53,13 +44,11 @@ public class Files {
 
     public Long showResult(String word) {
         List<CompletableFuture<Long>> futureList = frList.stream()
-                .map(file -> CompletableFuture.supplyAsync(()-> file.countIncludeLines(word), executor))
+                .map(file -> CompletableFuture.supplyAsync(()-> file.countIncludeLines(word), executorVariable))
                 .collect(Collectors.toList());
 
         return futureList.stream()
                 .mapToLong(CompletableFuture::join)
                 .sum();
-
     }
-
 }
