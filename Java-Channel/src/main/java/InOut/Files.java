@@ -6,11 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 
 public class Files {
 
-    public final List<FileRead> frList;
+    private final List<FileRead> frList;
+
+    private final Executor executor =
+            Executors.newCachedThreadPool(
+                    new ThreadFactory() {
+                        @Override
+                        public Thread newThread(Runnable r) {
+                            Thread t = new Thread(r);
+                            t.setDaemon(true);
+                            return t;
+                        }
+                    });
 
     private Files(List<FileRead> frList){
         this.frList = frList;
@@ -39,7 +53,7 @@ public class Files {
 
     public Long showResult(String word) {
         List<CompletableFuture<Long>> futureList = frList.stream()
-                .map(file -> CompletableFuture.supplyAsync(()-> file.countIncludeLines(word)))
+                .map(file -> CompletableFuture.supplyAsync(()-> file.countIncludeLines(word), executor))
                 .collect(Collectors.toList());
 
         return futureList.stream()

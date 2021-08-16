@@ -6,7 +6,7 @@ import java.util.List;
 
 public class FileRead {
 
-    public final List<String> brLines;
+    private final List<String> brLines;
 
     private FileRead(List<String> brLines){
         this.brLines = brLines;
