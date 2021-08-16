@@ -31,7 +31,7 @@ public class FileRead {
         return brLines;
     }
 
-    public long countIncludeLines(String word) throws IOException {
+    public long countIncludeLines(String word) {
         return brLines.stream()
                 .filter(line->line.contains(word))
                 .count();

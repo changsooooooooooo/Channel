@@ -27,9 +27,9 @@ class FileReadTest {
     @Test
     @DisplayName("BufferedReader Check")
     void brReadLineCheck() throws IOException {
-        FileRead fr = FileRead.makeFileRead("../Source-Text/hamlet.txt", "hello");
+        FileRead fr = FileRead.makeFileRead("../Source-Text/", "hamlet.txt");
         long start = System.currentTimeMillis();
-        long answer = fr.countIncludeLines("hamlet");
+        long answer = fr.countIncludeLines("him");
         long end = System.currentTimeMillis();
         System.out.printf("processing time : %s%n", end - start);
         System.out.println(answer);
@@ -38,12 +38,12 @@ class FileReadTest {
     @Test
     @DisplayName("BufferedReader CompletableFuture Check")
     void brReadLineCheckCompletableFuture() throws IOException {
-        FileRead fr = FileRead.makeFileRead("../Source-Text/hamlet.txt", "hello");
+        FileRead fr = FileRead.makeFileRead("../Source-Text/", "hamlet.txt");
         List<String> brLines = fr.brLines;
         long start = System.currentTimeMillis();
 
         List<CompletableFuture<Boolean>> futureList = brLines.stream()
-                .map(line -> CompletableFuture.supplyAsync(()->line.contains("hamlet"), executor))
+                .map(line -> CompletableFuture.supplyAsync(()->line.contains("him"), executor))
                 .collect(Collectors.toList());
 
         long answer = futureList.stream()

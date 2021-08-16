@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class Files {
 
-    private final List<FileRead> frList;
+    public final List<FileRead> frList;
 
     private Files(List<FileRead> frList){
         this.frList = frList;
@@ -33,6 +35,17 @@ public class Files {
             return List.of(Objects.requireNonNull(file.list()));
         }
         return List.of(fileName.split(" "));
+    }
+
+    public Long showResult(String word) {
+        List<CompletableFuture<Long>> futureList = frList.stream()
+                .map(file -> CompletableFuture.supplyAsync(()-> file.countIncludeLines(word)))
+                .collect(Collectors.toList());
+
+        return futureList.stream()
+                .mapToLong(CompletableFuture::join)
+                .sum();
+
     }
 
 }
