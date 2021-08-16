@@ -2,6 +2,7 @@ package InOut
 
 import (
 	"fmt"
+	"io/ioutil"
 	"strings"
 	"testing"
 )
@@ -16,4 +17,11 @@ func TestReadFile(t *testing.T) {
 	sb.WriteString(fileName)
 	fmt.Println(sb.String())
 	fmt.Printf("%x", sb.String())
+}
+
+func TestReadFile2(t *testing.T) {
+	path:="../Source-Text/"
+	n, err := ioutil.ReadFile(path)
+	fmt.Println(err)
+	fmt.Println(n)
 }
