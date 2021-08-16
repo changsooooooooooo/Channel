@@ -27,22 +27,22 @@ class FileReadTest {
     @Test
     @DisplayName("BufferedReader CompletableFuture Check")
     void brReadLineCheckCompletableFuture() throws IOException {
-//        FileRead fr = FileRead.makeFileRead("../Source-Text/", "hamlet.txt");
-//        List<String> brLines = fr.brLines;
-//        long start = System.currentTimeMillis();
-//
-//        List<CompletableFuture<Boolean>> futureList = brLines.stream()
-//                .map(line -> CompletableFuture.supplyAsync(()->line.contains("him")))
-//                .collect(Collectors.toList());
-//
-//        long answer = futureList.stream()
-//                .map(CompletableFuture::join)
-//                .filter(line -> line)
-//                .count();
-//
-//        long end = System.currentTimeMillis();
-//        System.out.printf("processing time executor : %s%n", end - start);
-//        System.out.println(answer);
+        FileRead fr = FileRead.makeFileRead("../Source-Text/", "hamlet.txt");
+        List<String> brLines = fr.brLines;
+        long start = System.currentTimeMillis();
+
+        List<CompletableFuture<Boolean>> futureList = brLines.stream()
+                .map(line -> CompletableFuture.supplyAsync(()->line.contains("him")))
+                .collect(Collectors.toList());
+
+        long answer = futureList.stream()
+                .map(CompletableFuture::join)
+                .filter(line -> line)
+                .count();
+
+        long end = System.currentTimeMillis();
+        System.out.printf("processing time executor : %s%n", end - start);
+        System.out.println(answer);
     }
 
 }

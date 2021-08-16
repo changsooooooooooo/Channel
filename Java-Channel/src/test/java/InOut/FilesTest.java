@@ -23,14 +23,14 @@ class FilesTest {
     @Test
     @DisplayName("Performance Comparing Just Sequential")
     void showResultTest2() throws IOException {
-//        Files files = Files.makeFiles("../Source-Text/", "*");
-//        List<FileRead> frList = files.frList;
-//        long start = System.currentTimeMillis();
-//        Long answer = frList.stream()
-//                .mapToLong(file -> file.countIncludeLines("this"))
-//                .sum();
-//        long end = System.currentTimeMillis();
-//        System.out.println("answer : " + answer);
-//        System.out.printf("Processing Time : %s", end-start);
+        Files files = Files.makeFiles("../Source-Text/", "*");
+        List<FileRead> frList = files.frList;
+        long start = System.currentTimeMillis();
+        Long answer = frList.stream()
+                .mapToLong(file -> file.countIncludeLines("this"))
+                .sum();
+        long end = System.currentTimeMillis();
+        System.out.println("answer : " + answer);
+        System.out.printf("Processing Time : %s", end-start);
     }
 }
