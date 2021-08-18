@@ -15,11 +15,15 @@ func main() {
 	if err!=nil{
 		fmt.Println(err)
 	}
-
 	taskNum:=files.TaskNum()
 	wg.Add(taskNum)
 
 	go files.FindTotalContainLines(&wg, fileChan, "this")
+
+	files.AddTask(fileChan)
+
 	close(fileChan)
 	wg.Wait()
+
+	fmt.Println("Answer : ", files.Answer)
 }

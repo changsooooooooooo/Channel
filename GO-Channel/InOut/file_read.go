@@ -88,6 +88,12 @@ func (f *Files) TaskNum() int{
 	return len(f.fileList)
 }
 
+func (f *Files) AddTask(fileChan chan* File){
+	for _, v := range f.fileList{
+		fileChan<-v
+	}
+}
+
 func (f *Files) FindTotalContainLines(wg *sync.WaitGroup, fileChan chan *File, word string) {
 	f.Answer = 0
 	for file := range fileChan{
