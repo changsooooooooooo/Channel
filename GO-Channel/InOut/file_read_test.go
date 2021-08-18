@@ -1,8 +1,9 @@
 package InOut
 
 import (
+	"bufio"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 )
@@ -20,8 +21,11 @@ func TestReadFile(t *testing.T) {
 }
 
 func TestReadFile2(t *testing.T) {
-	path:="../Source-Text/"
-	n, err := ioutil.ReadFile(path)
-	fmt.Println(err)
-	fmt.Println(n)
+	path:="../../Source-Text/"
+	n, _ := os.Open(path+"hamlet.txt")
+	scanner := bufio.NewScanner(n)
+	for scanner.Scan(){
+		fmt.Println(scanner.Text())
+		break
+	}
 }
