@@ -32,5 +32,5 @@ func (f *File) ReadFile(path string, fileName string){
 	if err!=nil{
 		fmt.Println(err)
 	}
-	fmt.Println(n)
+	fmt.Print(n)
 }
