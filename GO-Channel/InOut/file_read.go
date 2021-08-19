@@ -10,15 +10,15 @@ import (
 )
 
 type ProcessFile interface{
-	ReadFile(path string, fileName string) error
+	readFile(filePath string) error
 	FindContainLine(word string)
 	makeLineList(file *os.File)
 }
 
 type ProcessFileList interface{
-	makeFileList() error
 	TaskNum() int
-	findTotalContainLines(fileChan chan *File) int
+	makeFileList(path string) error
+	FindTotalContainLines(fileChan chan *File) int
 }
 
 type File struct{
@@ -31,8 +31,8 @@ type Files struct{
 	Answer int
 }
 
-func (f *File) ReadFile(path string, fileName string) error{
-	file, err := os.Open(path+fileName)
+func (f *File) readFile(filePath string) error{
+	file, err := os.Open(filePath)
 	if err!=nil{
 		return err
 	}
@@ -64,24 +64,23 @@ func GetInputs(files *Files) error{
 	if err != nil{
 		return err
 	}
-	err2:= files.makeFileList(path, fileName)
-
+	fullString := path+fileName
+	err2:=files.makeFileList(fullString)
 	if err2!=nil{
 		return err2
 	}
 	return nil
 }
 
-func (f *Files) makeFileList(path string, fileName string) error{
-	filesets, err:= filepath.Glob(path+fileName)
+func (f *Files) makeFileList(path string) error{
+	filenames, err:=filepath.Glob(path)
 	if err!=nil{
 		return err
 	}
-
-	f.fileList = make([]*File, len(filesets))
-	for i, v := range filesets {
+	f.fileList = make([]*File, len(filenames))
+	for i, v := range filenames {
 		f.fileList[i] = &File{}
-		err2 := f.fileList[i].ReadFile(path, v)
+		err2 := f.fileList[i].readFile(v)
 		if err2 != nil {
 			return err2
 		}

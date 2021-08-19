@@ -32,7 +32,25 @@ func TestReadFile2(t *testing.T) {
 }
 
 func TestGlobReadFile(t *testing.T) {
-	path:="../../Source-Text/"
-	n, _ := filepath.Glob(path+"*")
+	n, _ := filepath.Glob("../../Source-Text/"+"hamlet.txt")
 	fmt.Println(n)
+}
+
+func TestTotalCountCode(t *testing.T) {
+	files := &Files{}
+	err := files.makeFileList("../../Source-Text/hamlet.txt")
+	if err != nil {
+		return
+	}
+	for _, v := range files.fileList{
+		v.findContainLine("this")
+		files.Answer += v.AnswerByFile
+		fmt.Println(v.AnswerByFile)
+	}
+}
+
+func TestMakeFileList(t *testing.T) {
+	files := &Files{}
+	_ = files.makeFileList("../../Source-Text/hamlet.txt")
+	fmt.Println(files.fileList[0].lineList[0])
 }

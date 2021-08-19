@@ -18,7 +18,6 @@ func main() {
 	}
 	taskNum:=files.TaskNum()
 	wg.Add(taskNum)
-
 	go files.FindTotalContainLines(&wg, fileChan, "this")
 	//task 지정 어떻게 하면 되는지!
 	files.AddTask(fileChan)
