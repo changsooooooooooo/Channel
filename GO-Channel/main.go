@@ -14,12 +14,13 @@ func main() {
 	err:=InOut.GetInputs(files)
 	if err!=nil{
 		fmt.Println(err)
+		return
 	}
 	taskNum:=files.TaskNum()
 	wg.Add(taskNum)
 
 	go files.FindTotalContainLines(&wg, fileChan, "this")
-
+	//task 지정 어떻게 하면 되는지!
 	files.AddTask(fileChan)
 
 	close(fileChan)

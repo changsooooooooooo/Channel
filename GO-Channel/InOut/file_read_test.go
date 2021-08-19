@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -28,4 +29,10 @@ func TestReadFile2(t *testing.T) {
 		fmt.Println(scanner.Text())
 		break
 	}
+}
+
+func TestGlobReadFile(t *testing.T) {
+	path:="../../Source-Text/"
+	n, _ := filepath.Glob(path+"*")
+	fmt.Println(n)
 }

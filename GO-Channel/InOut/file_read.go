@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 )
@@ -17,7 +18,7 @@ type ProcessFile interface{
 type ProcessFileList interface{
 	makeFileList() error
 	TaskNum() int
-	FindTotalContainLines(fileChan chan *File) int
+	findTotalContainLines(fileChan chan *File) int
 }
 
 type File struct{
@@ -47,7 +48,7 @@ func (f *File) makeLineList(file *os.File){
 	}
 }
 
-func (f *File) FindContainLine(word string){
+func (f *File) findContainLine(word string){
 	f.AnswerByFile = 0
 	for _, v := range f.lineList{
 		if strings.Contains(v, word){
@@ -57,14 +58,13 @@ func (f *File) FindContainLine(word string){
 }
 
 func GetInputs(files *Files) error{
-	var input string
-	_, err := fmt.Scanln(&input)
+	var path string
+	var fileName string
+	_, err := fmt.Scanf("%s %s", &path, &fileName)
 	if err != nil{
 		return err
 	}
-	tempList:=strings.Split(input, " ")
-	path:=tempList[0]
-	err2:= files.makeFileList(path, tempList)
+	err2:= files.makeFileList(path, fileName)
 
 	if err2!=nil{
 		return err2
@@ -72,13 +72,18 @@ func GetInputs(files *Files) error{
 	return nil
 }
 
-func (f *Files) makeFileList(path string, fileList []string) error{
-	f.fileList=make([]*File, len(fileList)-1)
-	for i:=0;i<len(fileList)-1;i++{
+func (f *Files) makeFileList(path string, fileName string) error{
+	filesets, err:= filepath.Glob(path+fileName)
+	if err!=nil{
+		return err
+	}
+
+	f.fileList = make([]*File, len(filesets))
+	for i, v := range filesets {
 		f.fileList[i] = &File{}
-		err := f.fileList[i].ReadFile(path, fileList[i+1])
-		if err != nil {
-			return err
+		err2 := f.fileList[i].ReadFile(path, v)
+		if err2 != nil {
+			return err2
 		}
 	}
 	return nil
@@ -97,7 +102,7 @@ func (f *Files) AddTask(fileChan chan* File){
 func (f *Files) FindTotalContainLines(wg *sync.WaitGroup, fileChan chan *File, word string) {
 	f.Answer = 0
 	for file := range fileChan{
-		file.FindContainLine(word)
+		file.findContainLine(word)
 		f.Answer += file.AnswerByFile
 	}
 	wg.Done()
