@@ -18,17 +18,19 @@ type ProcessFile interface{
 type ProcessFileList interface{
 	TaskNum() int
 	makeFileList(path string) error
-	FindTotalContainLines(fileChan chan *File) int
+	DoChannelTask() int
+	findTotalContainLines(wg *sync.WaitGroup, fileChan chan *File, word string)
+	FindTotalContainLinesWithoutChannel(word string) int
 }
 
 type File struct{
 	lineList []string
-	AnswerByFile int
+	answerByFile int
 }
 
 type Files struct{
 	fileList []*File
-	Answer int
+	answer int
 }
 
 func (f *File) readFile(filePath string) error{
@@ -49,10 +51,10 @@ func (f *File) makeLineList(file *os.File){
 }
 
 func (f *File) findContainLine(word string){
-	f.AnswerByFile = 0
+	f.answerByFile = 0
 	for _, v := range f.lineList{
 		if strings.Contains(v, word){
-			f.AnswerByFile += 1
+			f.answerByFile += 1
 		}
 	}
 }
@@ -88,21 +90,33 @@ func (f *Files) makeFileList(path string) error{
 	return nil
 }
 
-func (f *Files) TaskNum() int{
-	return len(f.fileList)
-}
-
-func (f *Files) AddTask(fileChan chan* File){
+func (f *Files) DoChannelTask(word string) int{
+	var wg sync.WaitGroup
+	length:=len(f.fileList)
+	fileChan:=make(chan* File, length)
+	//보관함이 없는 체널 안된다!
+	f.answer = 0
+	wg.Add(length)
 	for _, v := range f.fileList{
 		fileChan<-v
+		go f.findTotalContainLines(&wg, fileChan, word)
 	}
+	wg.Wait()
+	return f.answer
 }
 
-func (f *Files) FindTotalContainLines(wg *sync.WaitGroup, fileChan chan *File, word string) {
-	f.Answer = 0
-	for file := range fileChan{
-		file.findContainLine(word)
-		f.Answer += file.AnswerByFile
-	}
+func (f *Files) findTotalContainLines(wg *sync.WaitGroup, fileChan chan *File, word string) {
+	file:=<-fileChan
+	file.findContainLine(word)
+	f.answer += file.answerByFile
 	wg.Done()
+}
+
+func (f *Files) FindTotalContainLinesWithoutChannel(word string) int {
+	f.answer = 0
+	for _, file := range f.fileList{
+		file.findContainLine(word)
+		f.answer += file.answerByFile
+	}
+	return f.answer
 }

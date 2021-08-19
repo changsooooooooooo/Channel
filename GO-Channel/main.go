@@ -1,29 +1,27 @@
 package main
 
 import (
-	"GO-Channel/InOut"
+	"GO-Channel/pipeline"
 	"fmt"
-	"sync"
+	"time"
 )
 
 func main() {
-	var wg sync.WaitGroup
-	fileChan:=make(chan* InOut.File)
-
-	files:=&InOut.Files{}
-	err:=InOut.GetInputs(files)
+	pipe:=&pipeline.Pipe{}
+	err:=pipe.GetPath()
 	if err!=nil{
 		fmt.Println(err)
 		return
 	}
-	taskNum:=files.TaskNum()
-	wg.Add(taskNum)
-	go files.FindTotalContainLines(&wg, fileChan, "this")
-	//task 지정 어떻게 하면 되는지!
-	files.AddTask(fileChan)
-
-	close(fileChan)
-	wg.Wait()
-
-	fmt.Println("Answer : ", files.Answer)
+	err = pipe.GetTargetWord()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	start:=time.Now()
+	answer:=pipe.DoAsync()
+	fmt.Printf("Result : %d, Elapsed time : %s\n", answer, time.Since(start))
+	start=time.Now()
+	answer=pipe.DoSequential()
+	fmt.Printf("Result : %d, Elapsed time : %s\n", answer, time.Since(start))
 }

@@ -5,7 +5,9 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         Files files = Files.makeFiles("./Source-Text/", "*");
+        long start = System.currentTimeMillis();
         Long answer = files.showResult("this");
-        System.out.println("Result : " + answer);
+        long end = System.currentTimeMillis();
+        System.out.printf("Result : %d Elapsed Time : %d", answer, end-start);
     }
 }

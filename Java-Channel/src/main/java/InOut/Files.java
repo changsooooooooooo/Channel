@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class Files {
 
-    private final List<FileRead> frList;
+    public final List<FileRead> frList;
 
     private final Executor executorVariable = new ExecutorVariable().excutable;
 
